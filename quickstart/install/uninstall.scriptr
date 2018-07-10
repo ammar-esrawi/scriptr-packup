@@ -1,0 +1,30 @@
+var responseObject = {};
+
+
+var pubsub = require("pubsub");
+
+/** REMOVE QUICK STAR APP CREATED CHANNELS **/
+var channels =  ["responseChannel", "requestChannel"];
+
+var options = {
+  "subscribeACL": "anonymous",
+  "publishACL": "anonymous"
+}
+
+channels.forEach(function(channel) {
+   var step1 = pubsub.deleteChannel(channel);
+   responseObject["channelDeletion_"+channel] = JSON.stringify(step1)
+});
+
+
+/** REMOVE QUICK STAR APP CREATED SUBDOMAIN **/
+var subdomain = request.account.accountKey;
+
+var params = {
+    "apsdb.name": subdomain
+}
+
+var step2 = apsdb.callApi("DeleteSubdomain", params, null); 
+responseObject["subdomainDeletion_"+subdomain] = JSON.stringify(step2)
+
+return responseObject;

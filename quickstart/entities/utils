@@ -1,0 +1,9 @@
+
+var publishResponse = function(channel, msgTag, data) {
+   var message = {"result": data};
+   
+   //Add a default id to identify the message published over the socket
+   message["id"] = msgTag;
+   
+   publish(channel, message);
+}

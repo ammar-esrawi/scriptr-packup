@@ -1,0 +1,16 @@
+var deviceManager=require("../entities/deviceManager");
+
+//Ingest the request params or data
+var requestParams = request.body || request.parameters;
+
+var data = {
+    temperature: requestParams.temperature,
+    luminosity: requestParams.luminosity
+}
+
+var device = new deviceManager.Conduit();
+
+//Publish device data to listening clients
+device.publish(data);
+
+return data;
