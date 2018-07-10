@@ -1,0 +1,56 @@
+var apply = require("advancedapp/entities/rules/apply");
+var deviceManager = require("advancedapp/entities/deviceManager");
+var mailer = require("advancedapp/entities/helper/mail/mailer");
+var log = require("log");
+log.setLevel("INFO");
+
+//process the data to send and/or save alerts
+
+function processData(data) {
+    try {
+        //get the alerts decision table result 
+        var result = apply.process("alerts", data);
+
+        if (!result) {
+            throw "apply return null response"
+        } else {
+            //process data
+
+
+            if (result.length == 0) return true;
+            log.info("rule result is : " + JSON.stringify(result));
+            for (i = 0; i < result.length; i++) {
+                var obj = result[i];
+
+                var alert = data;
+                alert.alert_info = "";
+                alert.alert_type = obj.email;
+                log.info("rule alert " + i + " : " + JSON.stringify(result));
+
+                //if we must send alert email accordding to the decision table
+                if (obj.email) {
+                    emailData(alert);
+                }
+                //if we must log the alert accordding to the decision table
+                if (obj.log) {
+                    logData(alert);
+                }
+
+            }
+
+        }
+        return true;
+    } catch (e) {
+        log.info(e);
+        return false;
+    }
+
+}
+
+function logData(alert) {
+    deviceManager.createDeviceAlert(alert);
+}
+
+function emailData(alert) {
+    mailer.sendAlertEmail(alert);
+}

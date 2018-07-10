@@ -1,0 +1,32 @@
+//this mail templates deppends on the alerts decision table tag action 
+//if the alerts decision table changed please add the corresponding mail template
+
+var _templates = {
+ 
+  mail: {
+      "high_temperature" : {
+           "subject": "Conduit <%= id %>:High Temperature Alert!",
+           "body": "<%= id %> Temperature: <%= temperature%> "
+       },
+       "high_luminosity" : {
+           "subject": "Conduit <%= id %>:High Luminosity Alert!",
+           "body": "<%= id %> Luminosity: <%= luminosity%> "
+       },
+       "high_pressure" : {
+           "subject": "Conduit <%= id %>:High Pressure Alert!",
+           "body": "<%= id %> Pressure: <%= pressure%> "
+       }
+  }
+}
+
+
+function getTemplate(type, event){
+   var result =  _templates[type][event];
+    if(! result){
+        result={
+            subject:"Conduit <%= id %> Alert!",
+            body:"<%= id %> Pressure: <%= pressure%> , Luminosity: <%= luminosity%> , Temperature: <%= temperature%>"
+        }
+    }
+  return result;
+}

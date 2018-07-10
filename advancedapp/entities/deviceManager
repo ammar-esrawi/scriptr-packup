@@ -1,0 +1,174 @@
+// Get an instance of the DefaultStore using the require() function
+var document = require("document");
+
+// Get an instance of your custom store called "multitech"
+var multitechStore = document.getInstance("multitech");
+
+
+// schemas names
+var event_schema="multitech_event";
+var alert_schema="multitech_alert";
+var latest_event_schema="multitech_latest_event";
+
+
+//delete device and its alerts and its events
+function deleteDevice(id) {
+     if(!id){
+        throw "id is empty"
+    }
+    var data=getDeviceData(id);
+    for(var x in data){
+        multitechStore.delete(x.key);
+    }
+}
+
+
+function createDeviceAlert(entry) {
+    if(!entry || !entry.id){
+        throw "entry or entry.id is empty"
+    }
+
+    entry["meta.schema"]=alert_schema;
+    return multitechStore.create(entry) ;
+}
+function createDeviceEvent(entry) {
+    if(!entry || !entry.id){
+        throw "entry or entry.id is empty"
+    }
+        
+    //update latest event document
+    var latestEvent={};
+    for(x in entry){
+        latestEvent[x]=entry[x];
+    }
+    latestEvent["meta.schema"] = latest_event_schema;
+    latestEvent.key = latest_event_schema+"_"+latestEvent.id;
+    var latesteventUpdated=multitechStore.save(latestEvent);
+	 if(!latesteventUpdated ){
+        log.error("update latest event error");
+    }
+    
+    entry["meta.schema"]=event_schema;
+    return multitechStore.create(entry) ;
+}
+
+
+
+function getDeviceData(id){
+    if(!id){
+        throw "id is empty"
+    }
+    var result = multitechStore.query({"query":'id="'+id+'"',fields:"*"});
+    if(result && result.metadata.status=="success"){
+        return result.result.documents;
+    } else{
+        return null;
+    }
+    
+}
+function getAllData(){
+    
+    var result = multitechStore.query({"query":'',fields:"*"});
+    if(result && result.metadata.status=="success"){
+        return result.result.documents;
+    } else{
+        return null;
+    }
+    
+}
+
+function getDeviceEvents(id){
+    if(!id){
+        throw "id is empty"
+    }
+    var result = multitechStore.query(
+        {"query":'id="'+id+'" and schema = "'+event_schema+'"',fields:"*"}
+    );
+    if(result && result.metadata.status=="success"){
+        return result.result.documents;
+    } else{
+        return null;
+    }
+    
+}
+function getAllEvents(){
+    
+    var result = multitechStore.query(
+        {"query":'schema = "'+event_schema+'"',fields:"*"}
+    );
+    if(result && result.metadata.status=="success"){
+        return result.result.documents;
+    } else{
+        return null;
+    }
+    
+}
+function getDeviceAlerts(id){
+     if(!id){
+        throw "id is empty"
+    }
+    var result = multitechStore.query(
+        {"query":'id="'+id+'" and schema = "'+alert_schema+'"',fields:"*"}
+    );
+    if(result && result.metadata.status=="success"){
+        return result.result.documents;
+    } else{
+        return null;
+    }
+    
+}
+
+function getDeviceLatestEvent(id){
+    if(!id){
+        throw "id is empty"
+    }
+    var result = multitechStore.query(
+        {"query":'id="'+id+'" and schema = "'+latest_event_schema+'"',fields:"*"}
+    );
+    if(result && result.metadata.status=="success"){
+        return result.result.documents;
+    } else{
+        return null;
+    }
+    
+}
+function getAllLatestEvents(){
+    
+    var result = multitechStore.query(
+        {"query":'schema = "'+latest_event_schema+'"',fields:"*"}
+    );
+    if(result && result.metadata.status=="success"){
+        return result.result.documents;
+    } else{
+        return null;
+    }
+    
+}
+
+function getAllAlerts(resultsPerPage, pageNumber){
+    
+    var result = multitechStore.query(
+        {"query":'schema = "'+alert_schema+'"',fields:"*", "resultsPerPage": resultsPerPage, "pageNumber": pageNumber}
+    );
+    if(result && result.metadata.status=="success"){
+        return result.result;
+    } else{
+        return null;
+    }
+    
+}
+
+function searchAlerts(id, resultsPerPage, pageNumber){
+     if(!id){
+        throw "id is empty"
+    }
+    var result = multitechStore.query(
+        {"query":'id like "'+id+'%" and schema = "'+alert_schema+'"',fields:"*", "resultsPerPage": resultsPerPage, "pageNumber": pageNumber}
+    );
+    if(result && result.metadata.status=="success"){
+        return result.result;
+    } else{
+        return null;
+    }
+    
+}

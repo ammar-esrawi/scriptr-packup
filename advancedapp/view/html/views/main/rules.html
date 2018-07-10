@@ -1,0 +1,4 @@
+<section class="page-inner" ng-init="vm.init()" ng-show="vm.showEditor==true">
+    <div class='loading-frame' ng-class="{hide: vm.showEditor == true, show: vm.showEditor == false}"><i class='fa fa-spinner fa-spin fa-2x'></i></div>
+    <iframe style="height: calc(100vh - 95px); width: 100%; border: 0;" ng-class="{hide: vm.showEditor == false, show: vm.showEditor == true}"  ng-src="{{vm.rulesrc}}" class="allFrame"></iframe>
+</section>

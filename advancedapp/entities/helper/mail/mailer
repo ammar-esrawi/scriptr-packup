@@ -1,0 +1,26 @@
+var templates = require("advancedapp/entities/helper/mail/templates");
+var config = require("advancedapp/entities/config");
+var _ = require("modules/underscore/underscore.js")._;
+
+var log = require("log");
+log.setLevel("INFO");
+
+function sendAlertEmail(alert)
+{
+     
+    try{
+         sendEmailForAlertType(alert,config.email.TO,config.email.FROM);
+    }
+    catch(e){
+        log.info("Mailer error: " + e);
+    }
+   
+}
+
+
+function sendEmailForAlertType( alert, toEmail, fromEmail) {
+    var subject = _.template(templates.getTemplate("mail", alert.alert_type).subject)(alert);
+    var body = _.template(templates.getTemplate("mail", alert.alert_type).body)(alert);
+    log.info(toEmail+ " "+ fromEmail + " " + subject + " " + body)
+    log.info(JSON.stringify(sendMail(toEmail, fromEmail, subject, body)));
+}

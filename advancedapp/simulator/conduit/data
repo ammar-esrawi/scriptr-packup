@@ -1,0 +1,55 @@
+//Running this simulator, virtualize a conduit call to the advanced app ingest api.
+var http = require("http");
+var log = require("log");
+log.setLevel("INFO");
+
+// Load user subdomains
+var listSubdomainsResult =  apsdb.callApi("ListSubdomains", {}, null);
+
+if(listSubdomainsResult.metadata && listSubdomainsResult.metadata.status == "success") {
+    if(listSubdomainsResult.result && listSubdomainsResult.result.length > 0) {
+        
+        //Build the url of the ingest api
+        const  api= "https://"+ listSubdomainsResult.result[0].name + ".scriptrapps.io/advancedapp/api/ingest";
+        
+        var devices = [{id:'xh2345', lat: "48.858", long: "2.2951"}, {id:'mf2345', lat: "48.725", long: "2.3951"}, {id:'yz2345', lat: "47.858", long: "1.2951"}];   
+        var randomDevice = devices[Math.floor(Math.random() * devices.length)]
+        //Generate random data to simulate the device data
+        var dataSnap =
+            {
+                "id":randomDevice.id,
+                "temperature": getRandomInt(0,50),
+                "luminosity": getRandomArbitrary(200,3000),
+                "pressure": getRandomInt(0,100000),
+                "location":{
+                    "lat": randomDevice.lat,
+                    "lon": randomDevice.long
+                }
+            };
+        log.info("Generated Data : "+ JSON.stringify(dataSnap));
+        
+        //Call the ingest api, with randomly generated data
+        var callResult = http.request({
+            "url" : api,
+            "method":"POST",
+            "bodyString":JSON.stringify(dataSnap),
+            "headers":{
+                "Content-Type":"application/json"
+            }
+        });
+        
+        return [callResult, dataSnap];
+        
+    } else {
+        return "No subdomain set for your account. Please setup a subdomain in order to run the simulator.";
+    }
+} else {
+    	return "Unable to call the quick start application [\"/quickstart/api/ingest\"] api. Failure to load your account subdomain property."
+}
+
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+function getRandomArbitrary(min, max) {
+    return Math.random() * (max - min) + min;
+}

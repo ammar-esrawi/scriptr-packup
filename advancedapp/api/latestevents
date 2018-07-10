@@ -1,0 +1,16 @@
+var deviceManager=require("advancedapp/entities/deviceManager");
+var utils = require("advancedapp/entities/utils");
+
+//Ingest the request params or data
+var requestParams = request.body || request.parameters;
+
+try {
+    //id passed return the latest event for this device 
+    if(requestParams.id){
+        return utils.format(deviceManager.getDeviceLatestEvent(requestParams.id));
+    } else { //otherwise return all latest events
+        return utils.format(deviceManager.getAllLatestEvents());
+    }
+}catch(ex){
+    throw ex
+}

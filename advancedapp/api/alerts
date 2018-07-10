@@ -1,0 +1,13 @@
+var deviceManager=require("advancedapp/entities/deviceManager");
+//Ingest the request params or data
+var requestParams = request.body || request.parameters;
+
+try {
+    if(requestParams.queryFilter){
+        return deviceManager.searchAlerts(requestParams.queryFilter, requestParams.resultsPerPage, requestParams.pageNumber);
+    }
+    return deviceManager.getAllAlerts(requestParams.resultsPerPage, requestParams.pageNumber);
+}catch(ex){
+    throw ex
+}
+    

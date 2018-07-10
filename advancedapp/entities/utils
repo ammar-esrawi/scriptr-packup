@@ -1,0 +1,78 @@
+function currentMillis(){
+    var d = new Date();
+    var n = d.getTime();
+    return n;
+}
+
+var publishResponse = function(channel, msgTag, data) {
+   var message = {"result": data};
+   
+   //Add a default id to identify the message published over the socket
+   message["id"] = msgTag;
+   
+   publish(channel, message);
+    
+    return true;
+}
+
+function executeDecisionTable(decisionTable, payload){
+	var sdtLibScript = asLibrary(decisionTable);
+	return sdtLibScript.execute(payload); 
+}
+
+//This is a utility function  to transform rest simple decision table scripts into a required library
+function asLibrary(sdtRestScript) {
+    var params = {
+      "apsdb.scriptName": sdtRestScript
+    };
+    var sdt_api_script =  apsdb.callApi("GetScript", params, {});
+    if(sdt_api_script.metadata.status == "success") {
+      var o = JSON.parse(sdt_api_script.result);
+      //THIS NEEDS TO BE ENHANCED AS A REGEX THAT CATCHES ALL "return..." outside a function(){} definition;
+      //START TRANSFORM, to get decision table scriptr script
+      // var p = (o.substring((o.lastIndexOf("*#*#*/") + "*#*#*/".length), o.length ));
+      var p = o.content
+      var content = p.substring(0, p.lastIndexOf("//START_REST_CALL"));
+      //Wrap library as a we would do if it was a require, pass request
+      var x = "(function(request){"+ content + " return {execute: function(payload) { return execute(payload);}}})(request)";
+      //Return decision table as a library
+      return eval(x);
+      //END TRANSFORM 
+    } else { //decision table script not found, return as if we required a non-existing script
+      return require(sdtRestScript);
+    }
+}
+
+function format(data){
+    var result = {};
+    for(var index = 0; index < data.length; index++ ){
+        var datum = data[index];
+        if(result[datum.id] == null){
+            result[datum.id] = {
+                "0": [],
+                "order": ["0"],
+                "source": "simulator"//datum.source //THIS IS THE SOURCE DISPLAY
+            };
+        }
+        var point = {
+            id: {value: datum.id},
+            myName: {value: datum.myName},
+            lat: {value: (datum.location).split(",")[1]},
+            long: {value:datum.location.split(",")[0]},
+            pressure: {value: datum.pressure},
+            luminosity: {value: datum.luminosity},
+            temperature: {value: datum.temperature},
+            dmp: {value: datum.source},
+            latest: result[datum.id].length == 0 ? true : false
+        }
+        if(datum.creationDate == null){
+            point.timestamp = (new Date()).toISOString();
+        }else{
+            point.timestamp = (new Date(datum.lastModifiedDate)).toISOString();
+        }
+        result[datum.id]["0"].push(point)
+
+
+    }
+    return result;
+}

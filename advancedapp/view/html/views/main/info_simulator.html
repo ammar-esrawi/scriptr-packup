@@ -1,0 +1,42 @@
+<div ng-non-bindable="">
+    <!-- begin vehicle summary -->
+      <section class="col-xs-12 bg-white-light pdt10 pdb10 index-summary">
+        <div class="col-xs-12 col-sm-6 text-center pdl0 pdr0">
+            <div class="icon bg-black" ng-bind-html="summaryIcons.device">
+            </div>
+            <div class="nb bold"><span>{{marker.details.id.value}}</span></div>
+            <small>Device Id</small>
+        </div>     
+        <div class="col-xs-12 col-sm-6 text-center">
+            <div class="icon bg-blue" ng-bind-html="summaryIcons.time">
+            </div>							
+            <div class="nb bold">{{(marker.details.timestamp  | date:'MM/dd/yyyy hh:mm:ss') || "N/A"}}</div>
+            <small>Time</small>
+        </div>	
+        
+       <div class="clearfix mb10"></div>
+       
+       <div class="col-xs-12 col-sm-4 text-center">
+              <div class="icon bg-green" ng-bind-html="summaryIcons.temperature">
+              </div>
+              <div class="nb bold">{{marker.details.temperature.value || "N/A"}} Celsius </div>
+              <small>Temperature</small>
+       </div>
+
+       <div class="col-xs-12 col-sm-4 text-center">
+              <div class="icon bg-yellow" ng-bind-html="summaryIcons.light">
+              </div>
+              <div class="nb bold">{{marker.details.luminosity.value || "N/A"}} Lux</div>
+              <small>Luminosity</small>
+       </div>
+       <div class="col-xs-12 col-sm-4 text-center">
+              <div class="icon bg-purple" ng-bind-html="summaryIcons.pressure">
+              </div>
+              <div class="nb bold">{{marker.details.pressure.value || "N/A"}} Pascal</div>
+              <small>Pressure</small>
+       </div>
+    </section>  
+    
+    <a type="button" href="#/dashboard/deviceId/{{marker.details.id.value}}" class="btn btn-default mt15" >View Dashboard</a>
+    <a type="button"  href="#/rules" class="btn btn-default mt15" ><i class="fa fa-ticket" aria-hidden="true"></i> Edit rule</a> 
+</div>

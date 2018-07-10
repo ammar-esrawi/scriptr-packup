@@ -1,0 +1,25 @@
+var deviceManager=require("advancedapp/entities/deviceManager");
+var utils = require("advancedapp/entities/utils");
+var query = {};
+if(request.body != null){
+    query = request.body;
+}else if(request.parameters.body){
+    query = request.parameters.body;
+} else {
+    query = request.parameters;
+}
+if(typeof query == 'string'){
+    try{
+        query = JSON.parse(query);   
+    }catch(e){
+    }
+}
+try{
+    if(query.id){
+        return deviceManager.getDeviceEvents(query.id);
+    }else{
+        return deviceManager.getAllEvents();
+    }
+}catch(ex){
+    throw ex
+}

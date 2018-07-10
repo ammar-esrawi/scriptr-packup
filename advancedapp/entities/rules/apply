@@ -1,0 +1,19 @@
+var utils = require("advancedapp/entities/utils");
+var log = require("log");
+log.setLevel("INFO");
+//check if device has associated rule and execute it
+function process(rule, data) {
+
+
+
+    try {
+
+        var result = utils.executeDecisionTable("advancedapp/entities/rules/" + rule, data);
+
+        return result;
+
+    } catch (e) {
+        log.info("processing rule exception : " + JSON.stringify(e));
+
+    }
+}

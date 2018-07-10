@@ -1,0 +1,90 @@
+body {font-family: 'Roboto', sans-serif; color: #5d5d5d;}
+.pd-40 {padding: 40px 0;}
+
+
+.wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.element {display: flex; }
+.doors-img {border-radius: 8px 0 0 8px; background: rgba(0,0,0,0.6); padding: 20px 0 0;}
+
+
+/* Additional CSS for styling */
+html, body, .wrap {
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+.wrap h4 { font-family: 'texgyreherosbold';}
+
+/*** Form centering ***/
+.form-wrap {
+    background: #fff;
+    box-shadow: 0 0 3px #ddd;
+    border-radius: 0 8px 8px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;}
+
+/*** Override bootstrap input field ***/
+/*.form-control {
+    background: #fff;
+    border: none;
+    color: #fff;
+    border-radius: 4px;
+}
+
+.form-control:focus {
+    border-color: none;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px #fff,0 0 4px #e4710d;
+    box-shadow: inset 0 1px 1px #fff,0 0 4px #e4710d;
+}*/
+
+body {background-image: url("//cdn.rawgit.com/scriptrdotio/resources/33a38a55/multitech/images/city-bg.jpeg"); background-repeat: no-repeat; background-size: cover; background-position: bottom;}
+.opacity {position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.1);
+    width: 100%;}
+
+/*** Override boostrap button styles ***/
+.btn-default {
+  background: #428bca;
+  border: none;
+  color: #fff;
+}
+
+.btn-default:hover, .btn-default:active, .btn-default:focus, .btn-default:active.focus, .btn-default:active:focus, .btn-default:active:hover  {
+  background: #2a6496;
+  color: #fff;
+  border: none;
+  outline: 0;
+}
+
+
+/*** Override bootstrap validator error colors ***/
+.has-error .form-control {border-color: #d25252;}
+.has-error .form-control-feedback,
+.has-error .checkbox, .has-error .checkbox-inline, .has-error .control-label, .has-error .help-block, .has-error .radio, .has-error .radio-inline, .has-error.checkbox label, .has-error.checkbox-inline label, .has-error.radio label, .has-error.radio-inline label {
+    color: #d25252;
+}
+
+/*** Override bootstrap validator success colors ***/
+.has-success .form-control {border-color: #546E7A;}
+.has-success .form-control-feedback {
+    color: #546E7A;
+}
+
+
+@media only screen and (max-width: 480px) {
+    html, body {height: auto;}
+    .element {display: block;}
+}
+
+

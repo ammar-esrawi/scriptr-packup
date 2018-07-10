@@ -1,0 +1,50 @@
+var responseObject = {};
+var pubsub = require("pubsub");
+var stores = require("store");
+var schema = require("schema");
+var devices = require("device");
+
+
+/** REMOVE ADVANCED APP CREATED CHANNELS **/
+var channels =  ["responseChannel", "requestChannel"];
+
+var options = {
+  "subscribeACL": "anonymous",
+  "publishACL": "anonymous"
+}
+
+channels.forEach(function(channel) {
+   var step1 = pubsub.deleteChannel(channel);
+   responseObject["channelDeletion_"+channel] = JSON.stringify(step1)
+});
+
+
+/** REMOVE ADVANCED APP CREATED SUBDOMAIN **/
+var subdomain = request.account.accountKey;
+
+var params = {
+    "apsdb.name": subdomain
+}
+
+var step2 = apsdb.callApi("DeleteSubdomain", params, null); 
+responseObject["subdomainDeletion_"+subdomain] = JSON.stringify(step2)
+
+/** REMOVE ADVANCED APP CREATED STORE  **/
+var step3 =stores.delete("multitech");    
+
+responseObject["storeDeletion_multitech"] = JSON.stringify(step3)
+
+/** REMOVE ADVANCED APP CREATED SCHEMAS  **/
+
+
+
+var step4 = schema.delete("multitech_event");
+responseObject["schemaDeletion_multitech_event"] = JSON.stringify(step4);
+var step5 = schema.delete("multitech_alert");
+responseObject["schemaDeletion_multitech_alert"] = JSON.stringify(step5);
+
+/** REMOVE ADVANCED APP DEMO DEVICE  **/
+
+var step6= devices.delete("demo");
+responseObject["deviceCreation_demo"] = JSON.stringify(step6);
+return responseObject;

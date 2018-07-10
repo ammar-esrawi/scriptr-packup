@@ -1,0 +1,39 @@
+var deviceManager=require("advancedapp/entities/deviceManager");
+var alertManager=require("advancedapp/entities/alertManager");
+var notificationManager=require("advancedapp/entities/notificationManager");
+var utils=require("advancedapp/entities/utils");
+try{
+    //Ingest the request params or data
+    var requestParams = request.body || request.parameters;
+    //prepare the data obj
+    var data = {
+        id:requestParams.id,
+        temperature: requestParams.temperature,
+        luminosity: requestParams.luminosity,
+        pressure:requestParams.pressure,
+        location:""+requestParams.location.lat+ "," +requestParams.location.lon
+
+    }
+
+
+    //add the event
+    var eventSaved=deviceManager.createDeviceEvent(getEvent(data));
+    
+    //proccess the event to check if any alert 
+    var alertProcessed=alertManager.processData(data);
+
+    //publish the data to channel
+    var dataPublished=notificationManager.publish(data);
+
+    
+
+    //return the result
+    return  eventSaved && alertProcessed && dataPublished;
+    
+}catch(ex){
+    throw ex;
+}
+//data formatteres for the data base schemas
+function getEvent(data){
+        return data;
+    }

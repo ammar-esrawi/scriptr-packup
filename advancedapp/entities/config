@@ -1,0 +1,11 @@
+
+var email = {
+    "TO":  request.account.adminEmail,
+    "FROM": "Multitech asset tracking",
+    "BODY": "Multitech asset tracking Warning."
+}
+
+ 
+var expiry = 60;
+var accountKey = "test1";
+var accountSecret = "HB7E966D4DFE6AA260633658504E1FBB";

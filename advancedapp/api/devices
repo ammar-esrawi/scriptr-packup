@@ -1,0 +1,24 @@
+var deviceManager=require("advancedapp/entities/deviceManager");
+var _= require("modules/underscore/underscore.js")._;
+//Ingest the request params or data
+var requestParams = request.body || request.parameters;
+
+try {
+    var events = deviceManager.getAllEvents();
+    var devices= _.map(events,
+                       function(obj){
+        return{
+            id:obj.id,
+            location:obj.location
+        }
+    });
+    
+    devices=_.uniq(devices,function(obj){
+        return obj.id;
+    });
+    return devices;
+
+}catch(ex){
+    throw ex
+}
+    

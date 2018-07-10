@@ -1,0 +1,18 @@
+<div ng-controller="mapCtrl as vm"  ng-init="vm.init()">
+    <scriptr-map
+             sources-info="vm.sources"
+             clustered-view="true"
+             cluster-zoom="8"
+             path-stroke-opacity="0.5"
+             path-stroke-weight="10"
+             summary-icons="vm.icons"
+             api="advancedapp/api/latestevents"
+             api-params="{}"
+             msg-tag="live_map_data"
+             geofence-manager="false"
+             bounce="true"
+             on-select-asset="vm.onSelectAsset"
+             max-asset-points=1>
+    <info-window id="infoWindowTemplate_simulator" template="/advancedapp/view/html/views/main/info_simulator.html" max-width="600"></info-window>
+    </scriptr-map>
+</div>

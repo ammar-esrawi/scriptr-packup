@@ -1,0 +1,13 @@
+var log = require("log");
+log.setLevel("INFO");
+
+
+var accountKey = request.account.accountKey;
+//This needs to be fixed
+var accountSecret = "WUEyMThGMjY0QjphbW1hcjo4MEQ0ODMwMTZERTc1OTczQUI4MjhEOUVDOUQ3NjI0QQ==";
+    
+var editorUrl = "https://www.scriptr.io/editor?authKey="+accountKey+"&authSecret="+accountSecret+"&console=0&scriptName=advancedapp/entities/rules/alerts";
+  
+
+
+return editorUrl

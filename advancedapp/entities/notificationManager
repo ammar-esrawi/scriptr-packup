@@ -1,0 +1,28 @@
+
+var utils = require("advancedapp/entities/utils");
+var deviceManager=require("advancedapp/entities/deviceManager");
+
+
+
+
+//Channel used by device manager to publish the data of the device to subscribed clients.
+const pubChannel = "responseChannel";
+
+
+function publish (data) {
+    try{
+        var msgTag= "dashboard_data_"+data.id;
+        var latestData = utils.format(deviceManager.getDeviceLatestEvent(data.id));
+        var data = 
+               { 
+                 "live": latestData, 
+                 "historical": deviceManager.getDeviceEvents(data.id)
+               }
+        utils.publishResponse(pubChannel, "live_map_data", latestData);
+        return utils.publishResponse(pubChannel, msgTag, data);
+    }catch (ex){
+        
+        throw ex;
+        return false;
+    }
+}

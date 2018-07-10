@@ -1,0 +1,23 @@
+<div>
+    <scriptr-grid columns-definition='[
+        {headerName: "Device", field: "id", width: 120},
+        {headerName: "Alert Type", field: "alert_type", width: 90},
+        {headerName: "Date", field: "creationDate", width: 110},
+        {headerName: "Message", field: "alert_info", width: 200}
+    ]' 
+               api="advancedapp/api/alerts" 
+               msg-tag="grid"   
+               enable-delete-row='false'
+               row-model-type='virtual'
+               pagination="true"    
+               enable-add-row='false'
+               cell-editable='false'
+               enable-client-side-filter='false'
+               enable-server-side-filter='true' 
+               enable-client-side-sorting='false'
+               enable-server-side-sorting='true'
+               row-model-selection='multiple'
+               pagination-page-size='5'  
+               transport='https'>
+      </scriptr-grid>
+</div> 
