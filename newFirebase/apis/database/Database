@@ -1,0 +1,50 @@
+var config = require("../../config");
+var docModule=require("./Document");
+function Database(dto) {
+    if (!dto || !dto.client || !dto.name) {
+        throw {
+            errorCode: config.errorCodeList['missingParameter'],
+            errorDetail: "dto.client and dto.name cannot be null or empty"
+        };
+    }
+
+    for(key in dto){
+        this[key] = dto[key];
+    }
+    
+}
+
+
+Database.prototype.doc=function(id){
+    
+        return new docModule.Document({
+           	client:this.client,
+            path:id
+        });
+    
+    
+    
+}
+Database.prototype.getRules=function(){
+    	var id=".settings/rules";
+        return new docModule.Document({
+           	client:this.client,
+            path:id,
+            strictPath:true
+        });
+    
+    
+    
+}
+Database.prototype.getSettings=function(id){
+    var id=".settings";
+        return new docModule.Document({
+           	client:this.client,
+            path:id,
+            strictPath:true
+        });
+    
+    
+    
+}
+

@@ -1,0 +1,23 @@
+//The Project Info 
+const project={
+    name:"Scriptr On Firebase",//not used for now but it will help you distinguish your apps
+    type: "service_account",//not used for now
+  	project_id: "scritr-465b2"//your project id in firepase
+};
+
+const access_token="ya29.c.ElvkBfuqiwzlueV4Gb8y4-MYbkVrWqzMdPW8e3VtAUPoD9xYUqX95lLiXB3Hg8H7pRkJ0opij8k_LdEGNLOGhU4eEFZMhtfv8Sx1HbYTBe5B6MCEGL4Oh6SJD8vR";
+
+//The database needed data to build the data Uris
+const database={
+    deafultDatabase:"scritr-465b2",
+    endPointPrefix:"https://",
+    endPointSuffix:".firebaseio.com"
+    
+};
+
+const errorCodeList = {
+    "missingParameter" : "MISSING_PARAMETER",
+    "invalidAction": "INVALID_ACTION",
+    "notFound": "ENTITY_NOT_FOUND"
+};
+

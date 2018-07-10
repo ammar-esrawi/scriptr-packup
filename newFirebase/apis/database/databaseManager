@@ -1,0 +1,44 @@
+var config = require("../../config");
+var clientModule= require("../../client");
+var databaseModule=require("./Database");
+
+
+function DatabaseManager(dto) {
+    if (!dto || !dto.database) {
+        throw {
+            errorCode: config.errorCodeList['missingParameter'],
+            errorDetail: "dto.databse cannot be null or empty"
+        };
+    }
+
+    for(key in dto){
+        this[key] = dto[key];
+    }
+    this.database=this.datbase?this.database:config.database;
+    this.token=this.token?this.token:config.access_token;
+    
+    
+}
+
+DatabaseManager.prototype.db = function(name){
+    if(!name){
+        name=this.database.deafultDatabase;
+    }
+    
+    var client=new clientModule.Client(
+    {
+        endPoint:this.database.endPointPrefix+name+this.database.endPointSuffix,
+        token:this.token
+    }
+    );
+   
+   return new databaseModule.Database(
+       
+       {
+           	client:client ,
+            name:name
+       }
+   );
+   
+    
+}

@@ -1,0 +1,6 @@
+function id2path(s){
+   
+    
+    return s.replace(/\./g, '/').trim();
+
+}

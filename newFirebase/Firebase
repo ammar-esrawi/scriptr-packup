@@ -1,0 +1,29 @@
+var clientModule = require("./client");
+var configModule = require("./config");
+
+var dbmgt = require("./apis/database/databaseManager");
+
+function Firebase(config) {
+    
+    if (config) {
+        
+        for(var key in config){
+            this[key] = config[key]
+        }
+    }
+   
+    this.token = this.token ? this.token : configModule.access_token;
+    
+    this.project = this.project?this.project : configModule.project;
+    this.database = this.database?this.database : configModule.database;
+    
+}
+
+Firebase.prototype.getDatabaseManager = function() {
+  
+    if (!this.databaseManager) {
+        this.databaseManager = new dbmgt.DatabaseManager({database:this.database});
+    }
+    
+    return this.databaseManager;
+};

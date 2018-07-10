@@ -1,0 +1,47 @@
+var config = require("../../config");
+/*
+*@class Query
+*@attributes orderBy, startAt, endAt, limitToFirst, limitToLast, or equalTo. 
+*
+*
+*/
+
+Query=function (val){
+    this.orderBy=format(val);
+}
+Query.prototype.orderBy = function(val){
+    this.orderBy=format(val);
+    
+}
+Query.prototype.startAt = function(val){
+    this.startAt=format(val);
+    
+}
+Query.prototype.endAt = function(val){
+    this.endAt=format(val);
+    
+}
+Query.prototype.limitToFirst = function(val){
+    this.limitToFirst=val;
+    
+}
+
+Query.prototype.limitToLast = function(val){
+    this.limitToLast=val;
+    
+}
+Query.prototype.equalTo = function(val){
+    this.equalTo=format(val);
+    
+}
+format=function (val){
+    if(typeof(val) == typeof("string"))
+    return '"'+val+'"';
+    if(typeof(val) == typeof({obj:"obj"})){
+         throw {
+            errorCode: config.errorCodeList['invalidAction'],
+            errorDetail: "value must not be object"
+        };
+    }
+    return val;
+}

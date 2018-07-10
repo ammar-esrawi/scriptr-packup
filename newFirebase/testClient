@@ -1,0 +1,26 @@
+var fbModule = require('./newFirebase/Firebase');
+
+var fb=new fbModule.Firebase();
+var dbMngr=fb.getDatabaseManager();
+var myDb=dbMngr.db("scritr-465b2");
+var  doc=myDb.doc("menu.id");
+
+doc.noWritePrint(true);
+
+var q=doc.query("value");
+q.equalTo(5);
+
+
+//var obj= doc.get(q);
+try{
+    
+    return doc.put(
+    {
+        data:"ffff"
+    }
+);
+}catch(exception){
+    return exception;
+}
+
+

@@ -1,0 +1,287 @@
+var config = require("../../config");
+var utils = require("../../utils");
+var queryModule = require("./Query");
+
+//consts
+const etagResponseHeader = "ETag";
+const etagRequestHeader = "X-Firebase-ETag";
+
+const ifMatchHeader = "if-match";
+
+
+function Document(dto) {
+    if (!dto || !dto.client) {
+        throw {
+            errorCode: config.errorCodeList['missingParameter'],
+            errorDetail: "dto.client cannot be null or empty"
+        };
+    }
+
+    for (key in dto) {
+        this[key] = dto[key];
+    }
+    if (!this.path) {
+        this.path = "";
+    }
+    if (!this.strictPath) {
+        this.path = utils.id2path(this.path);
+    }
+    if (!this.options) {
+        this.options = {};
+    }
+
+
+
+
+}
+Document.prototype.query=function(value){
+    
+        return  new queryModule.Query(value);
+    
+    
+    
+}
+Document.prototype.serverTimeStamp = function() {
+    return {
+        ".sv": "timestamp"
+    };
+}
+Document.prototype.inner = function(id) {
+    if (!this.path && !id) {
+        throw {
+            errorCode: config.errorCodeList['invalidAction'],
+            errorDetail: "inner canot be empty if parent is empty"
+        };
+    }
+
+
+    if (!this.path) {
+        this.path = "";
+    }
+    if (!this.strictPath) {
+        id = utils.id2path(id);
+    }
+    return new Document({
+        client: this.client,
+        path: this.path + "/" + id,
+        strictPath: this.strictPath
+    });
+
+
+
+}
+
+Document.prototype.setOptions = function(opts) {
+    this.options = opts;
+
+}
+Document.prototype.getOptions = function() {
+    return this.options;
+
+}
+Document.prototype.secureWrite = function(val) {
+    if (!typeof(val) == typeof(true)) {
+        // val is not a boolean
+        throw {
+            errorCode: config.errorCodeList['invalidAction'],
+            errorDetail: "val must be boolean"
+        };
+    }
+    this.options.secureWrite = val;
+
+}
+Document.prototype.isSecureWrite = function() {
+
+    return this.options.secureWrite;
+
+}
+Document.prototype.canSecureWrite = function() {
+
+    return this.etag ? true : false;
+
+}
+Document.prototype.noWritePrint = function(val) {
+    if (!typeof(val) == typeof(true)) {
+        // val is not a boolean
+        throw {
+            errorCode: config.errorCodeList['invalidAction'],
+            errorDetail: "val must be boolean"
+        };
+    }
+    this.options.noWritePrint = val;
+
+}
+Document.prototype.isNoWritePrint = function() {
+
+    return this.options.noWritePrint;
+
+}
+
+
+
+
+//base operations for the document
+Document.prototype.get = function(query) {
+    if (!this.path) {
+        this.path = "";
+    }
+    var params = {};
+    params.url = this.path + ".json";
+    params.method = "GET"
+    if (this.isSecureWrite()) {
+
+        params.headers = params.headers ? params.headers : {};
+        params.headers[etagRequestHeader] = "true";
+
+    }
+
+    if (query) {
+        if (this.isSecureWrite()) {
+
+            throw {
+                errorCode: config.errorCodeList['invalidAction'],
+                errorDetail: "can not combine secureWrite with query"
+            };
+
+        }
+        params.params = params.params ? params.params : {};
+        for (key in query) {
+            params.params[key] = query[key];
+        }
+
+    }
+
+    var response = this.client.callApi(params);
+
+
+
+    this.etag = response.headers[etagResponseHeader] ? response.headers[etagResponseHeader] : null;
+    return response.body;
+
+}
+
+
+
+Document.prototype.put = function(params) {
+    if (!params || !params.data) {
+        throw {
+            errorCode: config.errorCodeList['missingParameter'],
+            errorDetail: "data cannot be null or empty"
+        };
+    }
+    params.url = this.path + ".json";
+    params.bodyString = JSON.stringify(params.data);
+    params.method = "PUT"
+    delete params.data;
+    if (this.isSecureWrite()) {
+        if (!this.canSecureWrite()) {
+            throw {
+                errorCode: config.errorCodeList['invalidAction'],
+                errorDetail: "secure write enabled , please pull the data first"
+            };
+        }
+        params.headers = params.headers ? params.headers : {};
+        params.headers[ifMatchHeader] = this.etag;
+
+    }
+    if (this.isNoWritePrint()) {
+        params.params = params.params ? params.params : {};
+        params.params.print = "silent";
+    }
+
+
+    var response = this.client.callApi(params);
+    return response.body;
+}
+Document.prototype.post = function(params) {
+    if (!params || !params.data) {
+        throw {
+            errorCode: config.errorCodeList['missingParameter'],
+            errorDetail: "data cannot be null or empty"
+        };
+    }
+    params.url = this.path + ".json";
+    params.bodyString = JSON.stringify(params.data);
+    params.method = "POST"
+    delete params.data;
+
+
+    if (this.isSecureWrite()) {
+        if (!this.canSecureWrite()) {
+            throw {
+                errorCode: config.errorCodeList['invalidAction'],
+                errorDetail: "secure write enabled , please pull the data first"
+            };
+        }
+        params.headers = params.headers ? params.headers : {};
+        params.headers[ifMatchHeader] = this.etag;
+
+    }
+    if (this.isNoWritePrint()) {
+        params.params = params.params ? params.params : {};
+        params.params.print = "silent";
+    }
+
+
+    var response = this.client.callApi(params);
+    return response.body;
+}
+Document.prototype.patch = function(params) {
+    if (!params || !params.data) {
+        throw {
+            errorCode: config.errorCodeList['missingParameter'],
+            errorDetail: "data cannot be null or empty"
+        };
+    }
+    params.url = this.path + ".json";
+    params.bodyString = JSON.stringify(params.data);
+    params.method = "PATCH"
+    delete params.data;
+
+    if (this.isSecureWrite()) {
+        if (!this.canSecureWrite()) {
+            throw {
+                errorCode: config.errorCodeList['invalidAction'],
+                errorDetail: "secure write enabled , please pull the data first"
+            };
+        }
+        params.headers = params.headers ? params.headers : {};
+        params.headers[ifMatchHeader] = this.etag;
+
+    }
+    if (this.isNoWritePrint()) {
+        params.params = params.params ? params.params : {};
+        params.params.print = "silent";
+    }
+
+
+    var response = this.client.callApi(params);
+    return response.body;
+}
+
+Document.prototype.delete = function(params) {
+    if (!this.path) {
+        this.path = "";
+    }
+    var params = {};
+    params.url = this.path + ".json";
+    params.method = "DELETE"
+
+
+    if (this.isSecureWrite()) {
+        if (!this.canSecureWrite()) {
+            throw {
+                errorCode: config.errorCodeList['invalidAction'],
+                errorDetail: "secure write enabled , please pull the data first"
+            };
+        }
+        params.headers = params.headers ? params.headers : {};
+        params.headers[ifMatchHeader] = this.etag;
+
+    }
+
+
+
+    var response = this.client.callApi(params);
+    return response.body;
+}
